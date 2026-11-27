@@ -71,11 +71,11 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
     var card by mutableStateOf(CardKind.MEDIA)
     var playing by mutableStateOf(true)
     var lyricsOpen by mutableStateOf(false)
-    var volume by mutableFloatStateOf(0.6f)
+    var volumeFraction by mutableFloatStateOf(0.6f)
     var timer by mutableStateOf(CountdownState())
     var stopwatch by mutableStateOf(StopwatchState())
     var flashOn by mutableStateOf(false)
-    var toolsPage by mutableIntStateOf(0)
+    var toolsPageIndex by mutableIntStateOf(0)
     var peek by mutableStateOf<PeekPayload?>(null)
 
     private var basePosition by mutableLongStateOf(64_000L)
@@ -170,7 +170,7 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
     }
 
     override fun setVolume(fraction: Float) {
-        volume = fraction.coerceIn(0f, 1f)
+        volumeFraction = fraction.coerceIn(0f, 1f)
     }
 
     override fun startTimer(minutes: Int) {
@@ -218,7 +218,7 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
     }
 
     override fun setToolsPage(index: Int) {
-        toolsPage = index.coerceIn(0, 1)
+        toolsPageIndex = index.coerceIn(0, 1)
     }
 
     override fun peekReply() = endPeek()
@@ -288,7 +288,7 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
             tools = ToolsUi(
                 torch = TorchState(if (flashOn) TorchStatus.ON else TorchStatus.OFF),
                 battery = BatteryInfo(percent = 82, charging = false, known = true),
-                volume = VolumeLevel((volume * 15f).toInt(), 15),
+                volume = VolumeLevel((volumeFraction * 15f).toInt(), 15),
                 // A labelled sample: the preview never calls the weather service.
                 weather = WeatherState.Ready(
                     WeatherInfo("Sample city", 27.0, 2, true, System.currentTimeMillis(), "preview"),
@@ -296,7 +296,7 @@ class PreviewModel(private val appContext: Context) : NoopIslandActions() {
                 ),
                 use24h = use24h,
                 recordManualEnabled = settings.recordManualEnabled,
-                page = toolsPage,
+                page = toolsPageIndex,
                 device = DeviceStatus(NetworkKind.WIFI, 12_400_000_000L),
             ),
             lyricsOpen = lyricsOn,
