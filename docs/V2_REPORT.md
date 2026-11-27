@@ -1,6 +1,6 @@
 # NOVA PILL V2: laporan akhir
 
-Laporan ini mengikuti bagian 15 dari prompt perbaikan V2. Satu hal harus jelas sejak awal: **lapisan Android (Compose, overlay, kamera, MediaProjection, notifikasi) ditulis dan dicek secara statis, tetapi belum dikompilasi dengan Gradle dan belum dijalankan di perangkat.** Yang benar-benar dijalankan adalah 188 unit test untuk logika murni. Tidak ada commit yang dibuat; hasilnya dikirim sebagai ZIP.
+Laporan ini mengikuti bagian 15 dari prompt perbaikan V2. Satu hal harus jelas sejak awal: **lapisan Android (Compose, overlay, kamera, MediaProjection, notifikasi) sudah berhasil dikompilasi dan di-build di GitHub Actions (APK debug jadi, unit test lulus), tetapi belum dijalankan di perangkat.** Build hijau membuktikan kode bisa dikompilasi dan dikemas, bukan bahwa fiturnya bekerja di HP. Yang dijalankan sungguhan: 188 unit test logika murni (lokal) serta build dan unit test Gradle di CI. Hasilnya dikirim sebagai ZIP dan sudah ada di repo (commit `b9db0a0`, `1b46d58`, `bda8a5a`).
 
 ## 1. RINGKASAN PERBAIKAN V2
 
@@ -139,15 +139,16 @@ Path relatif terhadap `app/src/main/java/app/novapill/android/` kecuali disebut 
 - 188 unit test logika murni (kompilasi `kotlinc` 2.0.21 + JUnit lewat skrip lokal): hasil OK. Cakupan: codec pengaturan dan migrasi, state machine, layout, torch tracker, state machine perekam, kalkulator, geometri jendela, teks/filter/dedup notifikasi, parser lirik, timer, JSON, kode cuaca, rute.
 - Pemeriksaan statis lokal: impor dan nama simbol proyek, nama resource (`R.string.*` semua ada), kelas komponen manifest, deklarasi top-level ganda (tidak ada), pemanggilan konstruktor.
 - Percobaan kompilasi seluruh sumber dengan `kotlinc` tanpa SDK Android: gagal secara wajar (ribuan "unresolved reference" untuk tipe Android/Compose), tidak bisa dipakai sebagai bukti.
+- Build GitHub Actions (run #3, commit `bda8a5a`, 2026-11-27): `:app:assembleDebug` sukses (APK debug sekitar 10 MB), `:app:testDebugUnitTest` sukses, `:app:lintDebug` jalan dan laporannya terunggah. Kompilator Kotlin memberi 3 peringatan (satu kondisi yang selalu true, dua API yang ditandai deprecated) dan tidak ada error.
+- Dua run sebelumnya gagal dan sudah diperbaiki: run #1 gagal di langkah setup SDK (paket `tools` sudah tidak ada di sdkmanager; workflow kini memasang `platform-tools` saja). Run #2 gagal kompilasi dengan 4 error "Platform declaration clash" di `Preview.kt` (properti `volume` dan `toolsPage` bentrok dengan fungsi `setVolume` dan `setToolsPage`; diganti nama menjadi `volumeFraction` dan `toolsPageIndex`).
 
 **Tidak dijalankan:**
-- Build Gradle penuh dan GitHub Actions untuk 2.0.0.
 - Pengujian di perangkat fisik atau emulator.
 - Review independen oleh agen lain: dua percobaan gagal karena batas pemakaian.
 
 ## 11. KETERBATASAN
 
-- Kode Android belum dikompilasi; run Actions pertama bisa menampilkan error kompilasi yang harus diperbaiki.
+- Build hijau tidak menjamin perilaku di HP: semua fitur yang butuh perangkat belum dijalankan dan perlu diuji dengan `docs/MANUAL_TEST_CHECKLIST.md`.
 - Overlay tidak bisa tampil di atas sebagian layar sistem; sebagian produsen membatasi overlay dan layanan latar.
 - Konten yang diblokir untuk tangkapan layar terekam hitam.
 - Audio internal tidak didukung.
@@ -176,6 +177,6 @@ Path relatif terhadap `app/src/main/java/app/novapill/android/` kecuali disebut 
 | Layar pengaturan baru | IMPLEMENTED, DEVICE TEST PENDING |
 | Penanda V2 di intro dan What's new | IMPLEMENTED, DEVICE TEST PENDING |
 | Fitur lama dari 1.0 | IMPLEMENTED, DEVICE TEST PENDING (uji ulang) |
-| Build GitHub Actions 2.0.0 | NOT VERIFIED (belum dijalankan) |
+| Build GitHub Actions 2.0.0 (assembleDebug + unit test) | DONE & VERIFIED (run #3, commit `bda8a5a`) |
 
-Tidak ada fitur yang diberi label DONE & VERIFIED hanya karena tampilannya atau karena berhasil dikompilasi.
+Tidak ada fitur yang diberi label DONE & VERIFIED hanya karena tampilannya atau karena berhasil dikompilasi; label itu di tabel ini hanya dipakai untuk logika yang dijalankan unit test dan untuk build di CI.

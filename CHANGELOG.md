@@ -7,6 +7,8 @@ Version code 2. Settings schema 2; settings saved by 1.0 migrate automatically.
 ### Fixed
 - Flashlight: the tile and the compact pill no longer claim "On" without a confirmed torch state. Cause: a fixed "On" in the compact tools card and a stored boolean instead of the camera service's state.
 - Flashlight: no stale state from an earlier run; the torch callback is registered only while the island service runs.
+- Build: the GitHub Actions workflow no longer asks the SDK action to install the retired `tools` package (the first run failed there).
+- Build: `PreviewModel.volume` and `PreviewModel.toolsPage` clashed on the JVM with the `setVolume` and `setToolsPage` overrides; renamed to `volumeFraction` and `toolsPageIndex` (the second run failed there). The third run is green.
 
 ### Added
 - Idle panel with real clock, date, weather (Open-Meteo, with loading, offline and stale states) and battery; three idle modes; the pill widens around a camera cutout.

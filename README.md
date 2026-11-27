@@ -13,10 +13,11 @@ A Dynamic-Island-style pill for Android. It sits at the top of the screen and sh
   <img alt="Kotlin 2.2" src="https://img.shields.io/badge/Kotlin-2.2-E5173F?style=flat-square&labelColor=000000">
   <img alt="Jetpack Compose" src="https://img.shields.io/badge/UI-Jetpack%20Compose-E5173F?style=flat-square&labelColor=000000">
   <img alt="Version 2.0.0" src="https://img.shields.io/badge/version-2.0.0-E5173F?style=flat-square&labelColor=000000">
+  <a href="https://github.com/CFSTUDIO-project/Novapill-2/actions/workflows/android-build.yml"><img alt="Build status on GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/CFSTUDIO-project/Novapill-2/android-build.yml?branch=main&style=flat-square&labelColor=000000&label=build"></a>
   <img alt="Device test pending" src="https://img.shields.io/badge/device%20test-pending-555555?style=flat-square&labelColor=000000">
 </p>
 
-> **Version 2.0.0.** The logic layer has 188 passing unit tests. The Android layer is written and statically checked, but it has not been through a full Gradle build or a run on a real phone yet. The [Status](#status) table says exactly what is verified and what is not. Indonesian version: [README.id.md](README.id.md).
+> **Version 2.0.0.** The whole project builds on GitHub Actions: the debug APK is assembled and the unit tests pass. It has not been run on a real phone yet, so the features that need a device are marked as pending. The [Status](#status) table says exactly what is verified and what is not. Indonesian version: [README.id.md](README.id.md).
 
 ## Contents
 
@@ -184,8 +185,10 @@ The system's screen-capture consent is separate and is asked each time you recor
 
 1. Create a repository and push this project to it.
 2. Open the **Actions** tab and the workflow **Android build**. It sets up JDK 17, the Android SDK and Gradle, runs `./gradlew --no-daemon --stacktrace :app:assembleDebug`, and uploads the debug APK as the artifact **`nova-pill-debug-apk`**. If a run did not start by itself after the push, start it from the Actions tab.
-3. A second step runs the unit tests (`:app:testDebugUnitTest`) and uploads the test report.
+3. The workflow then runs the unit tests (`:app:testDebugUnitTest`) and Android Lint, and uploads both reports as artifacts (`unit-test-report`, `lint-report`).
 4. Download the artifact from the run page. No keystore or secret is needed or stored in this repository; the APK is debug-signed.
+
+Last verified: run #3 on commit `bda8a5a` (2026-11-27). The APK was built, the unit tests passed and the lint report was produced. Runs #1 and #2 failed; those failures led to the two build fixes listed in the [changelog](CHANGELOG.md).
 
 Local build: install JDK 17 and the Android SDK (API 36), open the project folder in Android Studio or run `./gradlew :app:assembleDebug`. The APK ends up in `app/build/outputs/apk/debug/`.
 
@@ -201,17 +204,18 @@ Local build: install JDK 17 and the Android SDK (API 36), open the project folde
 ## Testing
 
 - **Ran locally:** 188 unit tests on the Android-free logic, compiled with `kotlinc` 2.0.21 and run with JUnit. They cover the settings codec and the 1.0 to 2.0 migration, the island state machine, layout math, the torch tracker, the recorder state machine, the calculator engine, floating-window geometry, notification text, filter and de-duplication, the lyrics parser, sync and track matcher, timer math, the JSON helper, weather codes and the settings routes.
-- **Runs on GitHub Actions:** the same tests plus `PeekTimerTest` (which needs `kotlinx-coroutines-test`).
-- **Not tested yet:** everything that needs the Android runtime: overlay windows, camera torch, MediaProjection, MediaStore, the notification listener, DataStore, the Compose UI. The 2.0.0 Android sources were written and statically checked without a full Android build environment, so the first Actions run is also the first full compile.
+- **Verified on GitHub Actions (run #3, 2026-11-27):** `:app:assembleDebug` compiles the whole Android layer and produces the debug APK, and `:app:testDebugUnitTest` runs the unit tests (the same ones plus `PeekTimerTest`, which needs `kotlinx-coroutines-test`). Both succeeded. Android Lint also ran and its report is uploaded as an artifact.
+- **Not tested yet:** everything that needs the Android runtime: overlay windows, camera torch, MediaProjection, MediaStore, the notification listener, DataStore, the Compose UI. A green build proves that the code compiles and packages, not that it behaves correctly on a phone; that part is yours to confirm with the checklist below.
 - **Your part:** [`docs/MANUAL_TEST_CHECKLIST.md`](docs/MANUAL_TEST_CHECKLIST.md) lists what to try on a device.
 - **Full V2 report (Indonesian):** [`docs/V2_REPORT.md`](docs/V2_REPORT.md) lists every changed file and the status of each feature.
 
 ## Status
 
-Labels used: **DONE & VERIFIED**, **IMPLEMENTED, DEVICE TEST PENDING**, **PARTIALLY IMPLEMENTED**, **NOT SUPPORTED**, **NOT IMPLEMENTED**. Nothing is called verified because it compiles or looks right; "verified" here means a test ran and passed.
+Labels used: **DONE & VERIFIED**, **IMPLEMENTED, DEVICE TEST PENDING**, **PARTIALLY IMPLEMENTED**, **NOT SUPPORTED**, **NOT IMPLEMENTED**. Nothing about on-device behaviour is called verified because it compiles or looks right; "verified" means a test or a CI run actually executed and passed.
 
 | Area | Status | Unit-tested logic |
 |---|---|---|
+| Gradle build of the whole app plus unit tests on GitHub Actions | DONE & VERIFIED (run #3, commit `bda8a5a`) | the whole suite |
 | Island state machine and card priority | DONE & VERIFIED (logic only) | yes |
 | Settings codec and 1.0 to 2.0 migration | DONE & VERIFIED (logic only) | yes |
 | Flashlight follows the real torch state | IMPLEMENTED, DEVICE TEST PENDING | tracker: yes |

@@ -8,7 +8,7 @@
 Pil bergaya Dynamic Island untuk Android. Tampil di bagian atas layar dan menampilkan musik, timer, panggilan, notifikasi, senter, dan perekam layar. Native Kotlin dan Jetpack Compose.
 </p>
 
-> **Versi 2.0.0.** Lapisan logika punya 188 unit test yang lulus. Lapisan Android sudah ditulis dan dicek statis, tetapi belum melewati build Gradle penuh dan belum dijalankan di HP sungguhan. Tabel [Status](#status) menjelaskan apa yang sudah terverifikasi dan apa yang belum. Versi Inggris: [README.md](README.md).
+> **Versi 2.0.0.** Seluruh proyek berhasil di-build di GitHub Actions: APK debug jadi dan unit test lulus. Aplikasi belum dijalankan di HP sungguhan, jadi fitur yang butuh perangkat masih berstatus menunggu uji. Tabel [Status](#status) menjelaskan apa yang sudah terverifikasi dan apa yang belum. Versi Inggris: [README.md](README.md).
 
 ## Isi
 
@@ -105,6 +105,8 @@ General, Appearance, Behavior, Notifications, Music, **Quick panel**, **Screen r
 3. Langkah berikutnya menjalankan unit test (`:app:testDebugUnitTest`).
 4. Unduh artifact dari halaman run. Tidak ada keystore atau secret di repositori; APK ditandatangani debug.
 
+Terakhir diverifikasi: run #3 pada commit `bda8a5a` (2026-11-27). APK jadi, unit test lulus, dan laporan lint terunggah. Run #1 dan #2 gagal; kegagalan itu menjadi alasan dua perbaikan build yang tercatat di [changelog](CHANGELOG.md).
+
 Build lokal: JDK 17 + Android SDK (API 36), buka folder di Android Studio atau `./gradlew :app:assembleDebug`.
 
 ## Pasang dan pemakaian pertama
@@ -117,7 +119,8 @@ Build lokal: JDK 17 + Android SDK (API 36), buka folder di Android Studio atau `
 ## Pengujian
 
 - **Sudah dijalankan lokal:** 188 unit test pada logika tanpa Android (kompilasi `kotlinc` 2.0.21 + JUnit): codec pengaturan dan migrasi, state machine, layout, torch tracker, state machine perekam, kalkulator, geometri jendela, teks/filter/dedup notifikasi, parser lirik, matematika timer, JSON helper, kode cuaca, rute pengaturan.
-- **Belum diuji:** semua yang butuh runtime Android (overlay, torch kamera, MediaProjection, MediaStore, notification listener, DataStore, UI Compose). Sumber Android 2.0.0 ditulis dan dicek statis tanpa lingkungan build Android penuh, jadi run Actions pertama juga kompilasi penuh pertama.
+- **Terverifikasi di GitHub Actions (run #3, 2026-11-27):** `:app:assembleDebug` mengompilasi seluruh lapisan Android dan menghasilkan APK debug; `:app:testDebugUnitTest` menjalankan unit test. Keduanya sukses. Android Lint juga jalan dan laporannya diunggah sebagai artifact.
+- **Belum diuji:** semua yang butuh runtime Android (overlay, torch kamera, MediaProjection, MediaStore, notification listener, DataStore, UI Compose). Build hijau hanya membuktikan kode bisa dikompilasi dan dikemas, bukan bahwa perilakunya benar di HP; bagian itu perlu kamu pastikan lewat checklist.
 - Daftar uji di perangkat: [`docs/MANUAL_TEST_CHECKLIST.md`](docs/MANUAL_TEST_CHECKLIST.md). Laporan lengkap: [`docs/V2_REPORT.md`](docs/V2_REPORT.md).
 
 ## Status
@@ -126,6 +129,7 @@ Label: **DONE & VERIFIED**, **IMPLEMENTED, DEVICE TEST PENDING**, **PARTIALLY IM
 
 | Area | Status |
 |---|---|
+| Build Gradle seluruh aplikasi + unit test di GitHub Actions | DONE & VERIFIED (run #3, commit `bda8a5a`) |
 | State machine pulau dan prioritas kartu | DONE & VERIFIED (logika saja) |
 | Codec pengaturan dan migrasi 1.0 ke 2.0 | DONE & VERIFIED (logika saja) |
 | Senter mengikuti status torch asli | IMPLEMENTED, DEVICE TEST PENDING |
