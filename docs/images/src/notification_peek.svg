@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<title>NOVA PILL notification peek anatomy and privacy levels</title>
+<style>
+text{font-family:Inter,'DejaVu Sans',Helvetica,Arial,sans-serif;fill:#fff}
+.ti{font-size:34px;font-weight:700}
+.su{font-size:19px;fill-opacity:.6}
+.ca{font-size:15px;fill-opacity:.4}
+.h{font-size:20px;font-weight:700}
+.b{font-size:18px;fill-opacity:.72}
+.m{font-size:16px;fill-opacity:.72}
+.hd{font-size:16px;font-weight:700}
+.pa{font-size:18px;fill-opacity:.6}
+.ps{font-size:28px;font-weight:700}
+.pb{font-size:20px;fill-opacity:.82}
+.btn{font-size:17px;font-weight:700;fill:#000;text-anchor:middle}
+.box{fill:#0B0B0D;stroke:#fff;stroke-opacity:.3;stroke-width:1.5}
+.pill{fill:#050506;stroke:#fff;stroke-opacity:.5;stroke-width:1.5}
+.ln{fill:none;stroke:#fff;stroke-opacity:.4;stroke-width:1.5}
+.row{fill:none;stroke:#fff;stroke-opacity:.18;stroke-width:1}
+</style>
+<rect width="1600" height="900" fill="#000"/>
+<text x="80" y="92" class="ti">Notification peek: anatomy</text>
+<text x="80" y="130" class="su">What the pill shows, and how much, by privacy level. Placeholder text only.</text>
+
+<rect class="pill" x="80" y="170" width="720" height="200" rx="56"/>
+<text class="pa" x="136" y="224">Messages</text>
+<text class="ps" x="136" y="262">Sender name</text>
+<text class="pb" x="136" y="298">Message preview, one line</text>
+<rect x="136" y="318" width="110" height="40" rx="20" fill="#fff"/>
+<text class="btn" x="191" y="344">Reply</text>
+
+<path class="ln" d="M232 218H900"/><path class="ln" d="M330 254H900"/><path class="ln" d="M420 292H900"/><path class="ln" d="M246 338H900"/>
+<text class="m" x="912" y="224">1  App name, always shown</text>
+<text class="m" x="912" y="260">2  Sender, or the conversation title</text>
+<text class="m" x="912" y="298">3  One-line preview (Full level only)</text>
+<text class="m" x="912" y="344">4  Reply, only when the notification offers a reply action</text>
+
+<text class="h" x="80" y="438">What a peek shows, by setting</text>
+<rect class="box" x="80" y="454" width="1440" height="46" rx="10"/>
+<text class="hd" x="104" y="483">Setting</text><text class="hd" x="404" y="483">Shows</text><text class="hd" x="1004" y="483">Example</text>
+<text class="m" x="104" y="538">App name only</text><text class="m" x="404" y="538">App name and a fixed text</text><text class="m" x="1004" y="538">Messages / New notification</text>
+<path class="row" d="M80 554H1520"/>
+<text class="m" x="104" y="586">Summary</text><text class="m" x="404" y="586">App name and sender or title</text><text class="m" x="1004" y="586">Messages / Sender name</text>
+<path class="row" d="M80 602H1520"/>
+<text class="m" x="104" y="634">Full</text><text class="m" x="404" y="634">App, sender or title, one-line preview (120 characters max)</text><text class="m" x="1004" y="634">Messages / Sender name / Message preview</text>
+<path class="row" d="M80 650H1520"/>
+<text class="m" x="104" y="682">Locked or secret</text><text class="m" x="404" y="682">App name only, always</text><text class="m" x="1004" y="682">Messages / New notification</text>
+
+<text class="b" x="80" y="750">Nothing is stored. Peeks live in memory only and are dropped when the island stops.</text>
+<text class="b" x="80" y="782">Repeated posts of the same notification are collapsed; removing the notification removes the peek.</text>
+<text x="80" y="866" class="ca">Design illustration, not a screenshot. No real names or messages.</text>
+</svg>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NOVA PILL — Live Island</string>
+    <string name="launcher_name">NOVA PILL</string>
+    <string name="listener_label">NOVA PILL media and notification access</string>
+    <string name="channel_island">Island service</string>
+    <string name="channel_island_desc">Shown while the island is running. Tap Stop to remove the pill.</string>
+    <string name="channel_timer">Timers</string>
+    <string name="channel_timer_desc">Plays when a timer you started finishes.</string>
+    <string name="notif_island_title">NOVA PILL is running</string>
+    <string name="notif_island_text">Live Island is on. Tap to open the app.</string>
+    <string name="notif_action_stop">Stop</string>
+    <string name="notif_timer_title">Timer finished</string>
+    <string name="notif_timer_text">Time\'s up.</string>
+    <string name="channel_recording">Screen recording</string>
+    <string name="channel_recording_desc">Shown while NOVA PILL records the screen. Use Stop to finish and save.</string>
+    <string name="rec_notification_title">Screen recording</string>
+    <string name="rec_notification_preparing">Starting…</string>
+    <string name="rec_notification_recording">Recording the screen</string>
+    <string name="rec_notification_stopping">Saving…</string>
+    <string name="rec_stop">Stop</string>
+    <string name="reply_title">Reply</string>
+    <string name="reply_hint">Write a reply</string>
+    <string name="reply_send">Send</string>
+    <string name="reply_unavailable">That message is no longer available to reply to.</string>
+    <string name="reply_failed">The reply could not be sent.</string>
+    <!-- Notices shown on the pill. Short on purpose: the pill is small. -->
+    <string name="flash_none">This phone has no flashlight.</string>
+    <string name="flash_busy">The flashlight is in use by another app.</string>
+    <string name="flash_refused">Android refused to change the flashlight.</string>
+    <string name="flash_failed">The flashlight could not be changed.</string>
+    <string name="flash_not_confirmed">The system did not confirm the flashlight.</string>
+    <string name="rec_cannot_start">The recorder could not start.</string>
+    <string name="rec_saved_folder_only">Saved in the app\'s Movies folder.</string>
+    <string name="rec_no_viewer">No app found to play the video.</string>
+    <string name="floating_off">Floating tools are switched off in Settings.</string>
+    <string name="floating_failed">Android did not allow the floating window.</string>
+    <string name="app_open_failed">That app could not be opened.</string>
+    <string name="freeform_requested">Asked Android for a floating window.</string>
+    <string name="freeform_unsupported">No floating windows on this phone. Opened normally.</string>
+    <string name="reply_open_failed">The reply box could not be opened.</string>
+</resources>

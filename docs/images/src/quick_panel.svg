@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<title>NOVA PILL quick panel, two pages</title>
+<style>
+text{font-family:Inter,'DejaVu Sans',Helvetica,Arial,sans-serif;fill:#fff}
+.ti{font-size:34px;font-weight:700}
+.su{font-size:19px;fill-opacity:.6}
+.ca{font-size:15px;fill-opacity:.4}
+.b{font-size:18px;fill-opacity:.72}
+.m{font-size:16px;fill-opacity:.6}
+.clk{font-size:40px;font-weight:700}
+.tl{font-size:20px;font-weight:700}
+.ts{font-size:15px;fill-opacity:.55}
+.e{text-anchor:end}
+.c{text-anchor:middle}
+.box{fill:#0B0B0D;stroke:#fff;stroke-opacity:.3;stroke-width:1.5}
+.tile{fill:#050506;stroke:#fff;stroke-opacity:.28;stroke-width:1.5}
+.opt{fill:none;stroke:#fff;stroke-opacity:.4;stroke-width:1.5;stroke-dasharray:6 6}
+.chip{fill:none;stroke:#fff;stroke-opacity:.25;stroke-width:1.5}
+.chipa{fill:none;stroke:#E5173F;stroke-width:2}
+</style>
+<rect width="1600" height="900" fill="#000"/>
+<text x="80" y="92" class="ti">Quick panel: two pages</text>
+<text x="80" y="130" class="su">Header with clock, date, weather and battery, two tabs, and tiles. Simplified layout, sample values.</text>
+
+<!-- page 1 -->
+<rect class="box" x="80" y="160" width="700" height="560" rx="26"/>
+<text class="clk" x="116" y="232">12:45</text><text class="m" x="116" y="260">Thu 14 Aug</text>
+<text class="tl e" x="744" y="232">18°</text><text class="m e" x="744" y="260">Battery 84%</text>
+<rect class="chipa" x="116" y="290" width="88" height="34" rx="17"/><text class="m c" x="160" y="313" style="fill-opacity:1">Quick</text>
+<rect class="chip" x="214" y="290" width="88" height="34" rx="17"/><text class="m c" x="258" y="313">More</text>
+<rect class="tile" x="116" y="350" width="196" height="130" rx="16"/><text class="tl" x="136" y="414">Flashlight</text><text class="ts" x="136" y="442">Off</text>
+<rect class="tile" x="328" y="350" width="196" height="130" rx="16"/><text class="tl" x="348" y="420">Stopwatch</text>
+<rect class="tile" x="540" y="350" width="196" height="130" rx="16"/><text class="tl" x="560" y="420">Record</text>
+<rect class="tile" x="116" y="496" width="196" height="130" rx="16"/><text class="tl" x="136" y="566">Alarms</text>
+<rect class="tile" x="328" y="496" width="196" height="130" rx="16"/><text class="tl" x="348" y="566">Calendar</text>
+<rect class="tile" x="540" y="496" width="196" height="130" rx="16"/><text class="tl" x="560" y="566">Phone</text>
+<circle cx="418" cy="672" r="5" fill="#E5173F"/><circle cx="442" cy="672" r="5" fill="#fff" fill-opacity=".3"/>
+
+<!-- page 2 -->
+<rect class="box" x="820" y="160" width="700" height="560" rx="26"/>
+<text class="clk" x="856" y="232">12:45</text><text class="m" x="856" y="260">Thu 14 Aug</text>
+<text class="tl e" x="1484" y="232">18°</text><text class="m e" x="1484" y="260">Battery 84%</text>
+<rect class="chip" x="856" y="290" width="88" height="34" rx="17"/><text class="m c" x="900" y="313">Quick</text>
+<rect class="chipa" x="954" y="290" width="88" height="34" rx="17"/><text class="m c" x="998" y="313" style="fill-opacity:1">More</text>
+<rect class="tile" x="856" y="350" width="196" height="130" rx="16"/><text class="tl" x="876" y="414">Internet</text><text class="ts" x="876" y="442">Wi-Fi</text>
+<rect class="tile" x="1068" y="350" width="196" height="130" rx="16"/><text class="tl" x="1088" y="420">Volume</text>
+<rect class="tile" x="1280" y="350" width="196" height="130" rx="16"/><text class="tl" x="1300" y="420">Camera</text>
+<rect class="tile" x="856" y="496" width="196" height="130" rx="16"/><text class="tl" x="876" y="566">Calculator</text>
+<rect class="tile" x="1068" y="496" width="196" height="130" rx="16"/><text class="tl" x="1088" y="566">Settings</text>
+<rect class="opt" x="1280" y="496" width="196" height="130" rx="16"/><text class="tl" x="1300" y="552">Rec timer</text><text class="ts" x="1300" y="580">only if enabled</text>
+<circle cx="1158" cy="672" r="5" fill="#fff" fill-opacity=".3"/><circle cx="1182" cy="672" r="5" fill="#E5173F"/>
+
+<text class="b" x="80" y="760">Page 1: Quick</text><text class="b" x="820" y="760">Page 2: More</text>
+<text class="m" x="80" y="804">Each tile can be hidden under Settings, Quick panel. A tile that cannot work says so instead of pretending.</text>
+<text x="80" y="866" class="ca">Design illustration, not a screenshot. Icons and exact spacing are left out.</text>
+</svg>

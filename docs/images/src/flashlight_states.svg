@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<title>NOVA PILL flashlight states</title>
+<style>
+text{font-family:Inter,'DejaVu Sans',Helvetica,Arial,sans-serif;fill:#fff}
+.ti{font-size:34px;font-weight:700}
+.su{font-size:19px;fill-opacity:.6}
+.ca{font-size:15px;fill-opacity:.4}
+.h{font-size:22px;font-weight:700}
+.b{font-size:18px;fill-opacity:.72}
+.m{font-size:16px;fill-opacity:.6}
+.tl{font-size:22px;font-weight:700}
+.st{font-size:26px;font-weight:700}
+.ac{fill:#E5173F}
+.c{text-anchor:middle}
+.tile{fill:#0B0B0D;stroke:#fff;stroke-opacity:.3;stroke-width:1.5}
+.tilea{fill:#0B0B0D;stroke:#E5173F;stroke-width:2}
+.ln{fill:none;stroke:#fff;stroke-opacity:.45;stroke-width:1.5}
+.chip{fill:none;stroke:#fff;stroke-opacity:.35;stroke-width:1.5}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#fff" fill-opacity=".7"/></marker></defs>
+<rect width="1600" height="900" fill="#000"/>
+<text x="80" y="92" class="ti">Flashlight: from press to confirmed state</text>
+<text x="80" y="130" class="su">The tile and the pill change state only when the camera service says so.</text>
+
+<rect class="tile" x="80" y="180" width="300" height="150" rx="18"/><text class="tl" x="104" y="236">Flashlight</text><text class="st" x="104" y="282">Off</text>
+<rect class="tile" x="560" y="180" width="300" height="150" rx="18"/><text class="tl" x="584" y="236">Flashlight</text><text class="st" x="584" y="282">Turning on</text>
+<rect class="tilea" x="1040" y="180" width="300" height="150" rx="18"/><text class="tl" x="1064" y="236">Flashlight</text><text class="st ac" x="1064" y="282">On</text>
+<path class="ln" marker-end="url(#ar)" d="M392 255H548"/>
+<path class="ln" marker-end="url(#ar)" d="M872 255H1028"/>
+<text class="b c" x="470" y="240">press</text><text class="m c" x="470" y="284">request sent, pending</text>
+<text class="b c" x="950" y="240">callback</text><text class="m c" x="950" y="284">service: torch on</text>
+
+<text class="h" x="80" y="410">When it does not work, the tile says why</text>
+<rect class="tile" x="80" y="436" width="300" height="120" rx="18"/><text class="tl" x="104" y="486">Flashlight</text><text class="st" x="104" y="530">In use</text>
+<rect class="tile" x="560" y="436" width="300" height="120" rx="18"/><text class="tl" x="584" y="486">Flashlight</text><text class="st" x="584" y="530">Not confirmed</text>
+<rect class="tile" x="1040" y="436" width="300" height="120" rx="18"/><text class="tl" x="1064" y="486">Flashlight</text><text class="st" x="1064" y="530">No flash</text>
+<text class="m" x="80" y="584">another app holds the camera</text>
+<text class="m" x="560" y="584">no report within 1.8 s, so no claim of success</text>
+<text class="m" x="1040" y="584">this device has no flash unit</text>
+
+<text class="h" x="80" y="654">Tracker states</text>
+<rect class="chip" x="80" y="672" width="130" height="38" rx="19"/><text class="b c" x="145" y="698">no flash</text>
+<rect class="chip" x="224" y="672" width="130" height="38" rx="19"/><text class="b c" x="289" y="698">unknown</text>
+<rect class="chip" x="368" y="672" width="130" height="38" rx="19"/><text class="b c" x="433" y="698">off</text>
+<rect class="chip" x="512" y="672" width="130" height="38" rx="19"/><text class="b c" x="577" y="698">on</text>
+<rect class="chip" x="656" y="672" width="130" height="38" rx="19"/><text class="b c" x="721" y="698">busy</text>
+<text class="b" x="840" y="690">The pill says On only in the confirmed-on state; otherwise it says Tools.</text>
+<text class="b" x="840" y="718">The callback runs only while the island service runs, so no stale state.</text>
+<text class="b" x="80" y="772">On Android 13 and newer a strength slider appears when the hardware has levels.</text>
+<text x="80" y="866" class="ca">Design illustration, not a screenshot.</text>
+</svg>

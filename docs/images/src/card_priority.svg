@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<title>NOVA PILL card priority</title>
+<style>
+text{font-family:Inter,'DejaVu Sans',Helvetica,Arial,sans-serif;fill:#fff}
+.ti{font-size:34px;font-weight:700}
+.su{font-size:19px;fill-opacity:.6}
+.ca{font-size:15px;fill-opacity:.4}
+.h{font-size:22px;font-weight:700}
+.h3{font-size:20px;font-weight:700}
+.b{font-size:18px;fill-opacity:.72}
+.m{font-size:16px;fill-opacity:.6}
+.n{font-size:22px;font-weight:700;fill-opacity:.45}
+.box{fill:#0B0B0D;stroke:#fff;stroke-opacity:.3;stroke-width:1.5}
+</style>
+<rect width="1600" height="900" fill="#000"/>
+<text x="80" y="92" class="ti">Which card is primary</text>
+<text x="80" y="130" class="su">Ranked top to bottom. The first rung that applies is the primary card.</text>
+
+<rect x="80" y="160" width="800" height="70" rx="14" fill="#0B0B0D" stroke="#E5173F" stroke-width="2"/>
+<rect x="80" y="160" width="8" height="70" rx="4" fill="#E5173F"/>
+<text class="h" x="112" y="193">Peek: notification or call</text>
+<text class="m" x="112" y="217">layered over the primary card for a few seconds, then the primary card returns</text>
+
+<rect class="box" x="80" y="256" width="800" height="72" rx="14"/><text class="n" x="104" y="300">1</text><text class="h" x="146" y="288">Timer finished</text><text class="m" x="146" y="313">a timer at zero is primary before anything else</text>
+<rect class="box" x="80" y="340" width="800" height="72" rx="14"/><text class="n" x="104" y="384">2</text><text class="h" x="146" y="372">Media</text><text class="m" x="146" y="397">playing, buffering, or paused inside its grace time</text>
+<rect class="box" x="80" y="424" width="800" height="72" rx="14"/><text class="n" x="104" y="468">3</text><text class="h" x="146" y="456">Timer</text><text class="m" x="146" y="481">running or paused</text>
+<rect class="box" x="80" y="508" width="800" height="72" rx="14"/><text class="n" x="104" y="552">4</text><text class="h" x="146" y="540">Record</text><text class="m" x="146" y="565">your screen recording, the OS recording signal, or the manual record timer</text>
+<rect class="box" x="80" y="592" width="800" height="72" rx="14"/><text class="n" x="104" y="636">5</text><text class="h" x="146" y="624">Stopwatch</text><text class="m" x="146" y="649">running or paused</text>
+<rect class="box" x="80" y="676" width="800" height="72" rx="14"/><text class="n" x="104" y="720">6</text><text class="h" x="146" y="708">Tools</text><text class="m" x="146" y="733">shown while the flashlight is on, or when the tools were opened</text>
+
+<rect class="box" x="960" y="160" width="560" height="588" rx="18"/>
+<text class="h3" x="1000" y="208">The rule, as the code states it</text>
+<text class="b" x="1000" y="256">primary = the first of:</text>
+<text class="b" x="1000" y="286">timer finished, media, timer, record,</text>
+<text class="b" x="1000" y="314">stopwatch, tools</text>
+<text class="b" x="1000" y="372">A peek does not change the primary card.</text>
+<text class="b" x="1000" y="402">It sets the phase to notification peek</text>
+<text class="b" x="1000" y="430">while it shows.</text>
+<text class="b" x="1000" y="488">Media ranks above timer, record and</text>
+<text class="b" x="1000" y="518">stopwatch. A running timer does not</text>
+<text class="b" x="1000" y="546">outrank playing media.</text>
+<text class="ca" x="1000" y="714">Source: core/IslandStateMachine.kt</text>
+
+<text x="80" y="866" class="ca">Design illustration, not a screenshot.</text>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+<title>NOVA PILL screen recorder states</title>
+<style>
+text{font-family:Inter,'DejaVu Sans',Helvetica,Arial,sans-serif;fill:#fff}
+.ti{font-size:34px;font-weight:700}
+.su{font-size:19px;fill-opacity:.6}
+.ca{font-size:15px;fill-opacity:.4}
+.h{font-size:20px;font-weight:700}
+.nm{font-size:20px;font-weight:700}
+.ms{font-size:16px;fill-opacity:.8}
+.sb{font-size:14px;fill-opacity:.5}
+.b{font-size:17px;fill-opacity:.72}
+.m{font-size:16px;fill-opacity:.65}
+.box{fill:#0B0B0D;stroke:#fff;stroke-opacity:.3;stroke-width:1.5}
+.boxa{fill:#0B0B0D;stroke:#E5173F;stroke-width:2}
+.dash{fill:#0B0B0D;stroke:#fff;stroke-opacity:.45;stroke-width:1.5;stroke-dasharray:6 6}
+.ln{fill:none;stroke:#fff;stroke-opacity:.45;stroke-width:1.5}
+.lnd{fill:none;stroke:#fff;stroke-opacity:.4;stroke-width:1.5;stroke-dasharray:5 5}
+</style>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#fff" fill-opacity=".7"/></marker></defs>
+<rect width="1600" height="900" fill="#000"/>
+<text x="80" y="92" class="ti">Screen recorder: states</text>
+<text x="80" y="130" class="su">The pill shows a state only while the recorder reports it. The timer runs only while recording.</text>
+
+<rect class="box" x="80" y="190" width="240" height="120" rx="16"/><text class="nm" x="100" y="224">Idle</text><text class="ms" x="100" y="252">nothing recording</text><text class="sb" x="100" y="280">tap the Record tile</text>
+<rect class="box" x="375" y="190" width="240" height="120" rx="16"/><text class="nm" x="395" y="224">Preparing</text><text class="ms" x="395" y="252">Waiting for Android</text><text class="sb" x="395" y="280">consent, countdown</text>
+<rect class="boxa" x="670" y="190" width="240" height="120" rx="16"/><text class="nm" x="690" y="224">Recording</text><text class="ms" x="690" y="252">Recording the screen</text><text class="sb" x="690" y="280">timer runs, Stop</text>
+<rect class="box" x="965" y="190" width="240" height="120" rx="16"/><text class="nm" x="985" y="224">Stopping</text><text class="ms" x="985" y="252">Saving the video</text><text class="sb" x="985" y="280">finishing the file</text>
+<rect class="box" x="1260" y="190" width="240" height="120" rx="16"/><text class="nm" x="1280" y="224">Saved</text><text class="ms" x="1280" y="252">Video saved</text><text class="sb" x="1280" y="280">Open video, Dismiss</text>
+<path class="ln" marker-end="url(#ar)" d="M322 250H373"/><path class="ln" marker-end="url(#ar)" d="M617 250H668"/>
+<path class="ln" marker-end="url(#ar)" d="M912 250H963"/><path class="ln" marker-end="url(#ar)" d="M1207 250H1258"/>
+
+<path class="lnd" marker-end="url(#ar)" d="M495 312V418"/><path class="lnd" marker-end="url(#ar)" d="M790 312V418"/><path class="lnd" marker-end="url(#ar)" d="M1085 312V418"/>
+<rect class="dash" x="440" y="420" width="700" height="130" rx="16"/>
+<text class="nm" x="464" y="454">Error</text>
+<text class="ms" x="464" y="484">Permission not granted, Could not start, Encoder failed,</text>
+<text class="ms" x="464" y="510">Could not save, Recording was empty, Recording failed</text>
+<text class="sb" x="464" y="536">Buttons: Try again, Dismiss. Nothing is saved on error.</text>
+
+<rect class="box" x="80" y="610" width="700" height="190" rx="16"/>
+<text class="h" x="104" y="648">Before recording starts</text>
+<text class="b" x="104" y="682">1  System screen-capture consent, every time</text>
+<text class="b" x="104" y="712">2  Microphone permission, only if sound is on</text>
+<text class="b" x="104" y="742">3  Optional countdown: 0, 3 or 5 seconds</text>
+<text class="b" x="104" y="772">4  Foreground service, with the microphone type only if sound is on</text>
+
+<rect class="box" x="820" y="610" width="700" height="190" rx="16"/>
+<text class="h" x="844" y="648">Output</text>
+<text class="b" x="844" y="682">MP4 in Movies/NOVA-PILL, written through MediaStore</text>
+<text class="b" x="844" y="712">Android 10 and newer: pending until the recording stops cleanly</text>
+<text class="b" x="844" y="742">Empty or failed files are removed</text>
+<text class="b" x="844" y="772">Device (internal) audio: not supported</text>
+<text x="80" y="866" class="ca">Design illustration, not a screenshot. State names and messages follow the recorder card in the app.</text>
+</svg>
