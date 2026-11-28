@@ -311,6 +311,9 @@ class IslandCoordinator(
         }
 
         val visible = out.visible && !hiddenBySystem
+        // The Tools panel is only a way in. Once it is closed, and the flashlight is not the reason for it, the
+        // pill goes back to what it showed before (clock, battery, weather), never to a compact "Tools" card.
+        if (userCard == CardKind.TOOLS && !expanded && !flashOn && out.primary == null) userCard = null
         val card: CardKind? = userCard?.takeIf { it in out.cards } ?: out.primary
         if (!visible || card == null) expanded = false
         if (card != CardKind.MEDIA) lyricsOpen = false
@@ -507,7 +510,10 @@ class IslandCoordinator(
     override fun collapse() {
         expanded = false
         lyricsOpen = false
-        if (!g.flashlight.state.value.on) toolsRequested = false
+        if (!g.flashlight.state.value.on) {
+            toolsRequested = false
+            if (userCard == CardKind.TOOLS) userCard = null
+        }
         refresh()
     }
 

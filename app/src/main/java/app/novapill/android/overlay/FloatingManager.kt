@@ -1,271 +1,94 @@
 package app.novapill.android.overlay
 
 import android.content.Context
-import android.graphics.PixelFormat
-import android.hardware.display.DisplayManager
-import android.os.Build
-import android.util.DisplayMetrics
-import android.view.Display
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.FrameLayout
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.ComposeView
-import androidx.lifecycle.setViewTreeLifecycleOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import androidx.compose.runtime.Composable
 import app.novapill.android.core.WindowBox
-import app.novapill.android.core.CalcPad
-import app.novapill.android.core.FloatingGeometry
-import app.novapill.android.overlay.ui.FloatingCalculator
+import app.novapill.android.overlay.ui.FloatingCalculatorWindow
+import app.novapill.android.overlay.ui.FloatingBrowserWindow
+import app.novapill.android.overlay.ui.FloatingLauncherWindow
+import app.novapill.android.overlay.ui.FloatingNotesWindow
+import app.novapill.android.overlay.ui.GameHudWindow
 import app.novapill.android.settings.NovaSettings
 import app.novapill.android.util.Diagnostics
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.math.roundToInt
 
 /**
- * Floating tool windows that live inside NOVA PILL's own overlay permission (no system freeform needed).
- * Today there is one tool, the calculator, and at most one instance of it. The window is always kept fully
- * on screen: dragging and resizing go through [FloatingGeometry]. Positions use raw screen coordinates, so
- * the window does not shake while it follows the finger.
+ * Floating tool windows that live inside NOVA PILL's own overlay permission (no system freeform needed): the
+ * calculator, notes, a small browser, an app launcher and the game HUD. At most one window of each kind is
+ * open, and a window that is closed and opened again comes back where it was. Everything runs on the main thread.
  */
 class FloatingManager(private val app: Context, private val diagnostics: Diagnostics) {
-    private var calculator: CalculatorWindow? = null
+    private val windows = HashMap<FloatingKind, FloatingWindow>()
+    private val lastBoxes = HashMap<FloatingKind, WindowBox>()
+
+    private val _open = MutableStateFlow<Set<FloatingKind>>(emptySet())
+    val open: StateFlow<Set<FloatingKind>> = _open.asStateFlow()
 
     private val _calculatorOpen = MutableStateFlow(false)
     val calculatorOpen: StateFlow<Boolean> = _calculatorOpen.asStateFlow()
 
-    /** Opens the calculator, or closes it when it is already open. Returns false when Android refuses the window. */
-    fun toggleCalculator(settings: NovaSettings): Boolean {
-        val existing = calculator
+    fun isOpen(kind: FloatingKind): Boolean = windows.containsKey(kind)
+
+    /** Opens the window, or closes it when it is already open. Returns false when Android refuses the window. */
+    fun toggle(kind: FloatingKind, settings: NovaSettings): Boolean {
+        val existing = windows[kind]
         if (existing != null) {
             existing.close()
             return true
         }
-        val window = CalculatorWindow(settings)
+        return open(kind, settings)
+    }
+
+    fun toggleCalculator(settings: NovaSettings): Boolean = toggle(FloatingKind.CALCULATOR, settings)
+
+    fun open(kind: FloatingKind, settings: NovaSettings): Boolean {
+        if (windows.containsKey(kind)) return true
+        val window = FloatingWindow(app, diagnostics, specFor(kind, settings), lastBoxes[kind], ::gone, contentFor(kind))
         if (!window.open()) return false
-        calculator = window
-        _calculatorOpen.value = true
+        windows[kind] = window
+        publish()
         return true
     }
 
+    fun close(kind: FloatingKind) {
+        windows[kind]?.close()
+    }
+
     fun closeAll() {
-        calculator?.close()
+        for (window in windows.values.toList()) window.close()
     }
 
     /** A rotation or fold changed the screen: pull every window back inside. */
     fun onConfigurationChanged() {
-        calculator?.reclamp()
+        for (window in windows.values) window.reclamp()
     }
 
-    private fun windowContext(): Context {
-        if (Build.VERSION.SDK_INT >= 30) {
-            try {
-                val display = app.getSystemService(DisplayManager::class.java).getDisplay(Display.DEFAULT_DISPLAY)
-                if (display != null) {
-                    return app.createDisplayContext(display).createWindowContext(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, null)
-                }
-            } catch (e: RuntimeException) {
-                diagnostics.error("floating", e)
-            }
-        }
-        return app
+    private fun gone(kind: FloatingKind, box: WindowBox) {
+        windows.remove(kind)
+        lastBoxes[kind] = box
+        publish()
     }
 
-    private inner class CalculatorWindow(settings: NovaSettings) {
-        private val ctx = windowContext()
-        private val wm: WindowManager = ctx.getSystemService(WindowManager::class.java)
-        private val density = ctx.resources.displayMetrics.density
-        private val minW = (MIN_WIDTH_DP * density).roundToInt()
-        private val minH = (MIN_HEIGHT_DP * density).roundToInt()
-        private val owner = OverlayOwner()
-        private val widthPct = settings.floatingWidthPct
-        private val heightPct = settings.floatingHeightPct
-
-        private var pad by mutableStateOf(CalcPad())
-        private var box = WindowBox(0, 0, 1, 1)
-        private var root: FrameLayout? = null
-        private var params: WindowManager.LayoutParams? = null
-
-        // gesture start snapshots
-        private var dragStart = box
-        private var resizeStart = box
-
-        fun open(): Boolean {
-            val (sw, sh) = screenPx()
-            box = FloatingGeometry.initial(sw, sh, widthPct, heightPct, minW, minH)
-            val compose = ComposeView(ctx).apply {
-                setViewTreeLifecycleOwner(owner)
-                setViewTreeSavedStateRegistryOwner(owner)
-                setContent {
-                    FloatingCalculator(
-                        pad = pad,
-                        onKey = { key -> pad = CalcPad.press(pad, key) },
-                        onClose = { close() },
-                    )
-                }
-            }
-            val frame = FrameLayout(ctx)
-            frame.addView(compose, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-
-            val titleBarPx = (TITLE_BAR_DP * density).roundToInt()
-            val closeZonePx = (CLOSE_ZONE_DP * density).roundToInt()
-            val gripPx = (GRIP_DP * density).roundToInt()
-            val dragHandle = HandleView(
-                ctx,
-                description = "Move the calculator window",
-                onDown = { dragStart = box },
-                onDelta = { dx, dy -> moveFrom(dragStart, dx, dy) },
-            )
-            frame.addView(
-                dragHandle,
-                FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, titleBarPx, Gravity.TOP or Gravity.START).apply {
-                    rightMargin = closeZonePx
-                },
-            )
-            val resizeHandle = HandleView(
-                ctx,
-                description = "Resize the calculator window",
-                onDown = { resizeStart = box },
-                onDelta = { dx, dy -> resizeFrom(resizeStart, dx, dy) },
-            )
-            frame.addView(resizeHandle, FrameLayout.LayoutParams(gripPx, gripPx, Gravity.BOTTOM or Gravity.END))
-
-            val lp = WindowManager.LayoutParams(
-                box.w,
-                box.h,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
-                    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                PixelFormat.TRANSLUCENT,
-            )
-            lp.gravity = Gravity.TOP or Gravity.START
-            lp.x = box.x
-            lp.y = box.y
-            lp.title = "NOVA PILL calculator"
-            return try {
-                wm.addView(frame, lp)
-                owner.resume()
-                root = frame
-                params = lp
-                true
-            } catch (e: WindowManager.BadTokenException) {
-                diagnostics.error("floating", e)
-                owner.destroy()
-                false
-            } catch (e: SecurityException) {
-                diagnostics.error("floating", e)
-                owner.destroy()
-                false
-            } catch (e: RuntimeException) {
-                diagnostics.error("floating", e)
-                owner.destroy()
-                false
-            }
-        }
-
-        fun close() {
-            val frame = root ?: return
-            root = null
-            params = null
-            try {
-                wm.removeViewImmediate(frame)
-            } catch (e: IllegalArgumentException) {
-                diagnostics.error("floating", e)
-            }
-            owner.destroy()
-            calculator = null
-            _calculatorOpen.value = false
-        }
-
-        fun reclamp() {
-            val (sw, sh) = screenPx()
-            applyBox(FloatingGeometry.resize(box, 0, 0, minW, minH, sw, sh))
-        }
-
-        private fun moveFrom(start: WindowBox, dx: Int, dy: Int) {
-            val (sw, sh) = screenPx()
-            applyBox(FloatingGeometry.move(start, dx, dy, sw, sh))
-        }
-
-        private fun resizeFrom(start: WindowBox, dx: Int, dy: Int) {
-            val (sw, sh) = screenPx()
-            applyBox(FloatingGeometry.resize(start, dx, dy, minW, minH, sw, sh))
-        }
-
-        private fun applyBox(next: WindowBox) {
-            val frame = root ?: return
-            val lp = params ?: return
-            box = next
-            lp.x = next.x
-            lp.y = next.y
-            lp.width = next.w
-            lp.height = next.h
-            try {
-                wm.updateViewLayout(frame, lp)
-            } catch (e: IllegalArgumentException) {
-                diagnostics.error("floating", e)
-            }
-        }
-
-        private fun screenPx(): Pair<Int, Int> {
-            if (Build.VERSION.SDK_INT >= 30) {
-                val bounds = wm.maximumWindowMetrics.bounds
-                return bounds.width() to bounds.height()
-            }
-            val metrics = DisplayMetrics()
-            @Suppress("DEPRECATION")
-            wm.defaultDisplay.getRealMetrics(metrics)
-            return metrics.widthPixels to metrics.heightPixels
-        }
+    private fun publish() {
+        _open.value = windows.keys.toSet()
+        _calculatorOpen.value = windows.containsKey(FloatingKind.CALCULATOR)
     }
 
-    /** A transparent touch area that reports how far the finger moved on the screen since it went down. */
-    private class HandleView(
-        context: Context,
-        description: String,
-        private val onDown: () -> Unit,
-        private val onDelta: (Int, Int) -> Unit,
-    ) : View(context) {
-        private var downX = 0f
-        private var downY = 0f
-
-        init {
-            contentDescription = description
-        }
-
-        override fun onTouchEvent(event: MotionEvent): Boolean {
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    downX = event.rawX
-                    downY = event.rawY
-                    onDown()
-                    return true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    onDelta((event.rawX - downX).roundToInt(), (event.rawY - downY).roundToInt())
-                    return true
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> return true
-            }
-            return super.onTouchEvent(event)
-        }
+    private fun specFor(kind: FloatingKind, s: NovaSettings): FloatingSpec = when (kind) {
+        FloatingKind.CALCULATOR -> FloatingSpec(kind, "Calculator", false, 232, 330, s.floatingWidthPct, s.floatingHeightPct)
+        FloatingKind.NOTES -> FloatingSpec(kind, "Notes", true, 260, 320, 86, 66, dragStripDp = 48, buttonsZoneDp = 150)
+        FloatingKind.BROWSER -> FloatingSpec(kind, "Browser", true, 280, 380, 94, 76, dragStripDp = 44, buttonsZoneDp = 56)
+        FloatingKind.LAUNCHER -> FloatingSpec(kind, "Apps", false, 260, 340, 80, 64, dragStripDp = 44, buttonsZoneDp = 56)
+        FloatingKind.GAME_HUD -> FloatingSpec(kind, "Game HUD", false, 148, 86, 1, 1, dragStripDp = -1, buttonsZoneDp = 0, resizable = false, startAtDp = 12 to 96)
     }
 
-    private companion object {
-        const val MIN_WIDTH_DP = 232
-        const val MIN_HEIGHT_DP = 330
-        const val TITLE_BAR_DP = 44
-        const val CLOSE_ZONE_DP = 56
-        const val GRIP_DP = 36
+    private fun contentFor(kind: FloatingKind): @Composable (FloatingHandle) -> Unit = when (kind) {
+        FloatingKind.CALCULATOR -> { h -> FloatingCalculatorWindow(h) }
+        FloatingKind.NOTES -> { h -> FloatingNotesWindow(h) }
+        FloatingKind.BROWSER -> { h -> FloatingBrowserWindow(h) }
+        FloatingKind.LAUNCHER -> { h -> FloatingLauncherWindow(h) }
+        FloatingKind.GAME_HUD -> { h -> GameHudWindow(h) }
     }
 }
