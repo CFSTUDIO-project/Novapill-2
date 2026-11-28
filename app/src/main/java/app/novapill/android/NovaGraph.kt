@@ -11,6 +11,7 @@ import app.novapill.android.record.RecorderHub
 import app.novapill.android.system.SystemFlags
 import app.novapill.android.util.AppInfoCache
 import app.novapill.android.util.BatteryMonitor
+import app.novapill.android.util.CrashLog
 import app.novapill.android.util.ClockTools
 import app.novapill.android.util.DeviceStatusReader
 import app.novapill.android.util.Diagnostics
@@ -47,6 +48,8 @@ object NovaGraph {
     val mainScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     lateinit var diagnostics: Diagnostics
+        private set
+    lateinit var crashLog: CrashLog
         private set
     lateinit var settings: SettingsRepository
         private set
@@ -96,6 +99,7 @@ object NovaGraph {
     fun init(application: Application) {
         app = application
         diagnostics = Diagnostics()
+        crashLog = CrashLog(java.io.File(application.filesDir, "crash.log"))
         http = OkHttpClient.Builder()
             .connectTimeout(6, TimeUnit.SECONDS)
             .readTimeout(8, TimeUnit.SECONDS)

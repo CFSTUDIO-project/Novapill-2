@@ -8,5 +8,6 @@ class NovaApp : Application() {
         super.onCreate()
         NotificationChannels.ensure(this)
         NovaGraph.init(this)
+        NovaGraph.crashLog.install()
     }
 }

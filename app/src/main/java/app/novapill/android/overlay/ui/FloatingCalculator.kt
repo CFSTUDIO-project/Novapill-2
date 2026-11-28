@@ -15,6 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.novapill.android.core.CalcPad
+import app.novapill.android.overlay.FloatingHandle
 import app.novapill.android.ui.components.NovaIcon
 import app.novapill.android.ui.components.pressable
 import app.novapill.android.ui.theme.NovaColors
@@ -37,6 +42,17 @@ private val CALC_ROWS = listOf(
     listOf("1", "2", "3", "−"),
     listOf("0", ".", "%", "+"),
 )
+
+/** Holds the calculator's keypad state for as long as its window is open. */
+@Composable
+internal fun FloatingCalculatorWindow(handle: FloatingHandle) {
+    var pad by remember { mutableStateOf(CalcPad()) }
+    FloatingCalculator(
+        pad = pad,
+        onKey = { key -> pad = CalcPad.press(pad, key) },
+        onClose = { handle.close() },
+    )
+}
 
 /**
  * The calculator that lives in a floating overlay window. Dragging and resizing are handled by transparent
